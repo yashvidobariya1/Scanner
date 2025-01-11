@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 
 const QRScanner = () => {
   const [scanResult, setScanResult] = useState("");
 
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    console.log("Camera access is available.");
-  } else {
-    console.error("Camera access is not supported on this device.");
-  }
+  // Check if camera access is supported
+  useEffect(() => {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      console.log("Camera access is available.");
+    } else {
+      console.error("Camera access is not supported on this device.");
+    }
+  }, []);
 
   const startScanner = () => {
     const qrCodeScanner = new Html5QrcodeScanner(
@@ -19,11 +22,11 @@ const QRScanner = () => {
 
     qrCodeScanner.render(
       (result) => {
-        // Stop the scanner once the QR code is detected
+        // Once the QR code is detected, stop scanning
         qrCodeScanner
           .clear()
           .then(() => {
-            // Handle the scanned result
+            // Set the scanned result in the state
             setScanResult(result.text);
           })
           .catch((error) => {
