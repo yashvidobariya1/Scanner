@@ -16,9 +16,19 @@ const QRScanner = () => {
       { fps: 10, qrbox: 250 },
       false
     );
+
     qrCodeScanner.render(
       (result) => {
-        setScanResult(result.text);
+        // Stop the scanner once the QR code is detected
+        qrCodeScanner
+          .clear()
+          .then(() => {
+            // Handle the scanned result
+            setScanResult(result.text);
+          })
+          .catch((error) => {
+            console.error("Error stopping the scanner: ", error);
+          });
       },
       (error) => {
         console.log(error);
